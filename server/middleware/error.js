@@ -21,7 +21,6 @@ export const errorMiddleware = (err, req, res, next) => {
     case err.name === ERROR_TYPES.VALIDATION_ERROR:
       err.status = 400;
       err.message = "Validation Error";
-      errors = Object.values(err.errors).map((e) => e.message);
       break;
 
     case err.name === ERROR_TYPES.CAST_ERROR:
@@ -46,6 +45,5 @@ export const errorMiddleware = (err, req, res, next) => {
   res.status(err.status).json({
     success: false,
     message: err.message,
-    errors,
   });
 };

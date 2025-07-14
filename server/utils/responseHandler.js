@@ -7,15 +7,10 @@ export const responseHandler = (req, res, next) => {
     });
   };
 
-  res.apiError = (
-    message = "Internal Server Error",
-    statusCode = 500,
-    errors = null
-  ) => {
+  res.apiError = (message = "Internal Server Error", statusCode = 500) => {
     return res.status(statusCode).json({
       success: false,
       message,
-      errors,
     });
   };
 
