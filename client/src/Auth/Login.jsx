@@ -45,7 +45,7 @@ const Login = () => {
       toast.success(response.data.message);
 
       setLoading(false);
-      navigate("/dashboard");
+      navigate("/bookmarks");
       console.log("Login successful:", data);
     } catch (error) {
       console.error("Login error:", error);
