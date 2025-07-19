@@ -4,7 +4,7 @@ const BookmarkCard = ({ bookmark, darkMode, onDelete, index }) => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/bookmarks/${bookmark._id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/bookmarks/${bookmark._id}`,
         {
           method: "DELETE",
           headers: {
