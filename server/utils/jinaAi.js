@@ -3,7 +3,7 @@ import axios from "axios";
 export const generateSummary = async (url) => {
   try {
     const target = encodeURIComponent(url);
-    const response = await axios.get(`https://r.jina.ai/http://${target}`);
+    const response = await axios.get(`https://r.jina.ai/${target}`);
 
     let summary = response.data;
 

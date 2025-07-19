@@ -24,13 +24,6 @@ const schema = new Schema(
       type: String,
       trim: true,
     },
-    tags: [
-      {
-        type: String,
-        trim: true,
-        lowercase: true,
-      },
-    ],
     order: {
       type: Number,
       default: 0,
