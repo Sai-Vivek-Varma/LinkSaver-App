@@ -1,6 +1,6 @@
 import { Bookmark } from "../models/Bookmark.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-// import { generateSummary } from "../utils/jinaAI.js";
+import { generateSummary } from "../utils/jinaAI.js";
 import { fetchUrlMetadata } from "../utils/urlMetadata.js";
 
 export const getBookmarks = asyncHandler(async (req, res) => {
@@ -33,15 +33,13 @@ export const createBookmark = asyncHandler(async (req, res) => {
     return res.apiError("Bookmark already exists", 400);
   }
 
-  // const [metadataResult, summaryResult] = await Promise.all([
-  //   fetchUrlMetadata(normalizedUrl),
-  //   generateSummary(normalizedUrl),
-  // ]);
-
-  const metadataResult = await fetchUrlMetadata(normalizedUrl);
+  const [metadataResult, summaryResult] = await Promise.all([
+    fetchUrlMetadata(normalizedUrl),
+    generateSummary(normalizedUrl),
+  ]);
 
   console.log("Metadata result:", metadataResult);
-  // console.log("Summary result:", summaryResult);
+  console.log("Summary result:", summaryResult);
 
   if (!metadataResult || !metadataResult.success) {
     return res.apiError(
@@ -55,8 +53,7 @@ export const createBookmark = asyncHandler(async (req, res) => {
     url: metadataResult?.url || normalizedUrl,
     title: metadataResult?.title || normalizedUrl,
     favicon: metadataResult?.favicon || "",
-    // summary: summaryResult?.summary || "Summary not available",
-    summary: "AI summary coming soon",
+    summary: summaryResult?.summary || "Summary not available",
   });
 
   await bookmark.save();
