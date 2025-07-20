@@ -11,6 +11,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -54,6 +55,36 @@ const Login = () => {
     }
   };
 
+  // Demo user login
+  const handleDemoLogin = async () => {
+    setDemoLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/login`,
+        {
+          email: "boss@test.com",
+          password: "pass@123",
+        }
+      );
+
+      const { data } = response.data;
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      toast.success(response.data.message);
+      navigate("/bookmarks");
+    } catch (error) {
+      console.error("Demo login error:", error);
+      toast.error("Demo user not available. Please register or login");
+    } finally {
+      setDemoLoading(false);
+    }
+  };
+
   return (
     <div className="bg-gray-50">
       <div className="min-h-screen flex flex-col items-center justify-center py-6 px-4">
@@ -63,7 +94,40 @@ const Login = () => {
               Sign in
             </h1>
 
-            <form className="mt-12 space-y-6" onSubmit={handleSubmit}>
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={demoLoading || loading}
+                className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>{demoLoading ? "Logging in..." : "Try Demo User"}</span>
+              </button>
+              <p className="text-center text-xs text-gray-500 mt-2">
+                No registration required • Explore all features
+              </p>
+            </div>
+
+            <div className="flex items-center my-6">
+              <hr className="flex-1 border-gray-300" />
+              <span className="px-3 text-gray-500 text-sm">
+                Or continue with email
+              </span>
+              <hr className="flex-1 border-gray-300" />
+            </div>
+
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="text-slate-900 text-sm font-medium mb-2 block">
                   Email
@@ -150,10 +214,10 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="!mt-12">
+              <div className="!mt-8">
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || demoLoading}
                   className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? "Signing in..." : "Sign in"}
